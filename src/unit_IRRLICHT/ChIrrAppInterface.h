@@ -34,6 +34,9 @@ class ChIrrAppEventReceiver;
 
 class ChApiIrr ChIrrAppInterface {
   public:
+	  /// Create the IRRLICHT context (device, etc.)
+	  ChIrrAppInterface(chrono::ChSystem* psystem, IrrlichtDevice* userdevice=0);
+
     /// Create the IRRLICHT context (device, etc.)
     ChIrrAppInterface(chrono::ChSystem* psystem,
                       const wchar_t* title = 0,

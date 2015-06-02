@@ -293,6 +293,57 @@ bool ChIrrAppEventReceiver::OnEvent(const SEvent& event) {
 // Implementation of ChIrrAppInterface methods
 // -----------------------------------------------------------------------------
 
+
+
+
+// Create the IRRLICHT context (device, etc.)
+ChIrrAppInterface::ChIrrAppInterface(chrono::ChSystem* psystem, IrrlichtDevice* userdevice)
+	: step_manage(true),
+	try_realtime(false),
+	pause_step(false),
+	timestep(0.01),
+	do_single_step(false),
+	videoframe_save(false),
+	videoframe_num(0),
+	videoframe_each(1),
+	symbolscale(1.0),
+	user_receiver(0),
+	selectedtruss(0),
+	selectedspring(0),
+	selectedmover(0) {
+
+	device = userdevice;
+
+
+	if (device == 0) {
+		chrono::GetLog() << "Cannot use default video driver - fall back to OpenGL \n";
+		
+			return;
+	}
+
+
+	// Xeffects for shadow maps!
+	effect = new EffectHandler(device, device->getVideoDriver()->getScreenSize(), true, false, true);
+	effect->setAmbientColor(video::SColor(255, 122, 122, 122));
+	use_effects = false;  // will be true as sson as a lightwith shadow is added.
+
+	system = psystem;
+
+	system->AddRef();  // so that it works as with shared ptr
+
+	show_infos = false;
+
+	// the container, a level that contains all chrono nodes
+	container = device->getSceneManager()->addEmptySceneNode();
+
+	// the event receiver, taking care of user interaction
+	ChIrrAppEventReceiver* receiver = new ChIrrAppEventReceiver(this);
+	device->setEventReceiver(receiver);
+
+}
+
+
+
 // Create the IRRLICHT context (device, etc.)
 ChIrrAppInterface::ChIrrAppInterface(chrono::ChSystem* psystem,
                                      const wchar_t* title,
@@ -313,7 +364,9 @@ ChIrrAppInterface::ChIrrAppInterface(chrono::ChSystem* psystem,
       selectedtruss(0),
       selectedspring(0),
       selectedmover(0) {
-    device = createDevice(mydriver, dimens, 32, do_fullscreen, do_shadows);
+
+	device = createDevice(mydriver, dimens, 32, do_fullscreen, do_shadows);
+	
 
     if (device == 0) {
         chrono::GetLog() << "Cannot use default video driver - fall back to OpenGL \n";
@@ -321,12 +374,13 @@ ChIrrAppInterface::ChIrrAppInterface(chrono::ChSystem* psystem,
         if (!device)
             return;
     }
-
-    // Xeffects for shadow maps!
+	
+	
+	// Xeffects for shadow maps!
     effect = new EffectHandler(device, device->getVideoDriver()->getScreenSize(), true, false, true);
     effect->setAmbientColor(video::SColor(255, 122, 122, 122));
     use_effects = false;  // will be true as sson as a lightwith shadow is added.
-
+	
     if (title)
         device->setWindowCaption(title);
     else
@@ -497,9 +551,9 @@ ChIrrAppInterface::ChIrrAppInterface(chrono::ChSystem* psystem,
     hstr += " 'Print Scr' key: video capture to .bmp's\n";
     hstr += " 'F12' key: dump sys. matrices on disk\n";
     gad_textHelp->setText(hstr.c_str());
-
+	
     ///
-
+	
     system = psystem;
 
     system->AddRef();  // so that it works as with shared ptr
@@ -512,7 +566,10 @@ ChIrrAppInterface::ChIrrAppInterface(chrono::ChSystem* psystem,
     // the event receiver, taking care of user interaction
     ChIrrAppEventReceiver* receiver = new ChIrrAppEventReceiver(this);
     device->setEventReceiver(receiver);
+
 }
+
+
 
 // ChIrrAppInterface destructor. This safely delete every Irrlicht item
 // (including the Irrlicht scene nodes)
