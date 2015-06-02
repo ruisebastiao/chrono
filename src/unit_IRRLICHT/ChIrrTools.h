@@ -137,7 +137,7 @@ class ChApiIrr ChIrrTools {
     static int drawAllCOGs(chrono::ChSystem& mphysicalSystem, video::IVideoDriver* driver, double scale = 0.01);
 
     /// Easy-to-use function which draws coordinate systems of link frames.
-    static int drawAllLinkframes(chrono::ChSystem& mphysicalSystem, video::IVideoDriver* driver, double scale = 0.01);
+	static int drawAllLinkframes(chrono::ChSystem& mphysicalSystem, video::IVideoDriver* driver, double scale = 0.01, const std::string& name = "");
 
     /// --
     static void drawHUDviolation(video::IVideoDriver* driver,
