@@ -79,6 +79,8 @@ endif()
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+SET(CMAKE_DEBUG_POSTFIX "d" CACHE STRING "add a postfix, usually d on windows")
+
 #-----------------------------------------------------------------------------
 # OPTIONS AND USER SETTINGS
 # These cached variables will be shown in the GUI of CMake as
